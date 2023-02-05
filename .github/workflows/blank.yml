@@ -14,13 +14,16 @@ jobs:
 
       - name: Push commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           #!/bin/bash
           git config --local user.email "bot@someemail.com"
           git config --local user.name "bot on GitHub Actions"
 
-          echo "added by github action" > test.log
-          git add test.log
+          git switch -c pr-branch
+          echo "added by github action" > diff.log
+          git add diff.log
           git commit -m "Commit from github action"
-          git push -u origin main
+          git push -f -u origin pr-branch
+
+          gh pr create --title "Add some diff" --body "Is it work?"
